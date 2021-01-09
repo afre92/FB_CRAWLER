@@ -4,6 +4,7 @@ require "csv"
 
 # window_size= 1366x768
 Selenium::WebDriver::Chrome.driver_path = '/Users/andres/Desktop/scraper/chromedriver'
+
 driver    = Selenium::WebDriver.for :chrome
 wait      = Selenium::WebDriver::Wait.new(:timeout => 20)
 branches  = ["ActiveStaffingElizabeth"]
@@ -28,31 +29,28 @@ sleep 5
       driver.navigate.to "https://www.facebook.com/#{branch}/manage_jobs/?source=manage_jobs_tab&tab=applications"
       sleep 3
 
-
-
-
-      byebug
-
-
       # selected status i class hu5pjgll op6gxeva sp_jHXvoJjI_al_2x sx_da9368
-      # not_selected = i class hu5pjgll lzf7d6o1 sp_PQZKKDeZ74u_2x sx_1ea566
+      # blank_selected = i class hu5pjgll lzf7d6o1 sp_PQZKKDeZ74u_2x sx_1ea566
 
+      # new 1/9 status class
+      # selected = hu5pjgll op6gxeva sp_jHXvoJjI_al_2x sx_da9368
+      # blank = hu5pjgll lzf7d6o1 sp_16cEtpmvXgt_2x sx_577e44
 
       load_more_applications = true
-      applications = []
+      applications           = []
 
       while load_more_applications
 
-        # get applications container
+        # get applications container and push elements inside applications_container to applications
         applications_container = driver.find_element(:css, "div[class='aahdfvyu'] > div[class='b20td4e0 muag1w35']")
-        # push elements inside applications_container to applications
-        applications << applications_container.find_elements(:xpath, "*")
-        # flatten applications array
-        applications.fallent!
+        applications           << applications_container.find_elements(:xpath, "*")
+        applications.flatten!
 
         # if the last item recieved has not been marked
         # TODO: move this to functin to reuse later
-        last_applicant_status_blank = applications[-1].find_element(:css, "i[class='hu5pjgll lzf7d6o1 sp_PQZKKDeZ74u_2x sx_1ea566']")
+        byebug
+
+        last_applicant_status_blank = applications[-1].find_element(:css, "i[class='hu5pjgll lzf7d6o1 sp_16cEtpmvXgt_2x sx_577e44']")
 
         if last_applicant_status_blank # which means it has not been 'marked'
           get_more_applicants
