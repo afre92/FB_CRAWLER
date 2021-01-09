@@ -3,6 +3,7 @@ require "byebug"
 require "csv"
 
 # window_size= 1366x768
+Selenium::WebDriver::Chrome.driver_path = '/Users/andres/Desktop/scraper/chromedriver'
 driver    = Selenium::WebDriver.for :chrome
 wait      = Selenium::WebDriver::Wait.new(:timeout => 20)
 branches  = ["ActiveStaffingElizabeth"]
