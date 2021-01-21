@@ -5,14 +5,6 @@ require "csv"
 # window_size= 1366x768
 Selenium::WebDriver::Chrome.driver_path = '/Users/andres/Desktop/scraper/chromedriver'
 
-# options = Selenium::WebDriver::Chrome::Options.new
-# options.args.add('--disable-notifications')
-
-# driver = Selenium::WebDriver::Chrome.new(options)
-
-
-
-# driver = 
 auth_code = ARGV.first
 caps      = Selenium::WebDriver::Remote::Capabilities.chrome("goog:chromeOptions" => {"args" => ["--disable-notifications"]})
 driver    = Selenium::WebDriver.for :chrome, desired_capabilities: caps
@@ -32,8 +24,6 @@ sleep 2
 driver.find_element(:id, 'checkpointSubmitButton').click
 sleep 3
 
-byebug
-# remove 
 
 # TODO: remove sleep and use wait method
 
@@ -46,7 +36,7 @@ byebug
       full_name = phone_number = applicant_position = ""
 
       driver.navigate.to "https://www.facebook.com/#{branch}/manage_jobs/?source=manage_jobs_tab&tab=applications"
-      sleep 3
+      sleep 2
       
       # selected status i class hu5pjgll op6gxeva sp_jHXvoJjI_al_2x sx_da9368
       # blank_selected = i class hu5pjgll lzf7d6o1 sp_PQZKKDeZ74u_2x sx_1ea566
@@ -84,14 +74,15 @@ byebug
         end
         
       end
-
+      
       application_opened = false
       while applications.length > 0 && !application_opened
 
           application = applications.shift
           application.find_element(:css, "div div").click
           sleep 3
-
+          byebug
+          
           begin
             # check status of current applicant
             application.find_element(:css, "i[class='hu5pjgll lzf7d6o1 sp_lnSB2oS2umA_2x sx_cc289f']")
