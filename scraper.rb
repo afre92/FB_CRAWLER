@@ -37,20 +37,8 @@ sleep 3
 
       driver.navigate.to "https://www.facebook.com/#{branch}/manage_jobs/?source=manage_jobs_tab&tab=applications"
       sleep 2
-      
-      # selected status i class hu5pjgll op6gxeva sp_jHXvoJjI_al_2x sx_da9368
-      # blank_selected = i class hu5pjgll lzf7d6o1 sp_PQZKKDeZ74u_2x sx_1ea566
 
-      # new 1/9 status class
-      # selected = hu5pjgll op6gxeva sp_jHXvoJjI_al_2x sx_da9368
-      # blank = hu5pjgll lzf7d6o1 sp_16cEtpmvXgt_2x sx_577e44
-
-
-      # new 1/9.1 status class
-      # filled = hu5pjgll lzf7d6o1 sp_lnSB2oS2umA_2x
-      # blank = hu5pjgll lzf7d6o1 sp_lnSB2oS2umA_2x sx_cc289f
-
-
+      byebug
       load_more_applications = true
       applications           = nil
 
@@ -81,15 +69,23 @@ sleep 3
           application = applications.shift
           application.find_element(:css, "div div").click
           sleep 3
-          byebug
           
+          # byebug
           begin
-            # check status of current applicant
-            application.find_element(:css, "i[class='hu5pjgll lzf7d6o1 sp_lnSB2oS2umA_2x sx_cc289f']")
+            # if it can be found then exit ?
+            application.find_element(:css, "div[class^='rq0escxv l9j0dhe7'] > i[class^='hu5pjgll lzf7d6o1']")
           rescue Selenium::WebDriver::Error::NoSuchElementError
             application_opened = true
             next
           end
+
+          #  non selected
+          # rq0escxv l9j0dhe7 du4w35lb d2edcug0 hpfvmrgz j83agx80 pfnyh3mw j5wkysh0 hytbnt81
+          #i hu5pjgll lzf7d6o1 sp_I2ue0_XD3tN_2x sx_521871
+
+          # maybe selected
+          # rq1escxv l9j0dhe7
+          # hu5pjgll op6gxeva sp_JGdB-QXXM5I_2x sx_1ccdf1
 
           # point of start:
           # change all the element query by css class to xpath
@@ -108,6 +104,7 @@ sleep 3
             # end
 
             # get full name
+            byebug
             full_name_container  = main_section.find_element(:css,"div[class='bp9cbjyn j83agx80 bkfpd7mw aodizinl hv4rvrfc ofv0k9yr dati1w0a']")
             full_name            = full_name_container.find_element(:css, "span[class='d2edcug0 hpfvmrgz qv66sw1b c1et5uql oi732d6d ik7dh3pa fgxwclzu a8c37x1j keod5gw0 nxhoafnm aigsh9s9 ns63r2gh fe6kdd0r mau55g9w c8b282yb hrzyx87i o0t2es00 f530mmz5 hnhda86s oo9gr5id hzawbc8m']").text
 
