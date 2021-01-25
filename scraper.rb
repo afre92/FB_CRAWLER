@@ -45,13 +45,16 @@ sleep 3
         # get applications container and push elements inside applications_container to applications
         applications_container      = driver.find_element(:css, "div[class='aahdfvyu'] > div[class='b20td4e0 muag1w35']")
         applications                = applications_container.find_elements(:xpath, "*")
-        last_applicant_status_blank = nil
+        last_applicant_status_blank = false
+      
+        # check whether we need to load more applications
+        applications.last.find_element(:xpath, "*").click
+        main_section                  = driver.find_element(:css, "div[role='main']")
+        full_name_container           = main_section.find_element(:css,"div[class='bp9cbjyn j83agx80 bkfpd7mw aodizinl hv4rvrfc ofv0k9yr dati1w0a']")
 
-
-        begin
-          # if last application status blank ?
-          last_applicant_status_blank = applications[-1].find_element(:css, "div[class^='rq0escxv l9j0dhe7'] > i[class^='hu5pjgll lzf7d6o1 sp_I2ue0_XD3tN_2x']")
-        rescue Selenium::WebDriver::Error::NoSuchElementError
+        if full_name_container.text.include?("Set Status")
+          last_applicant_status_blank = true
+          next
         end
        
         if last_applicant_status_blank
