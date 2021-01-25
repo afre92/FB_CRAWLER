@@ -72,7 +72,6 @@ sleep 3
           application.find_element(:xpath, "*").click
           sleep 3
           
-
           main_section                  = driver.find_element(:css, "div[role='main']")
           full_name_container           = main_section.find_element(:css,"div[class='bp9cbjyn j83agx80 bkfpd7mw aodizinl hv4rvrfc ofv0k9yr dati1w0a']")
 
@@ -113,12 +112,6 @@ sleep 3
     end# end of csv
   
   end
-
-
-  def get_more_applicants
-
-  end
-  
 
   # wait = Selenium::WebDriver::Wait.new(:timeout => 15)
  
