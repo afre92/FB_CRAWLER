@@ -35,6 +35,8 @@ sleep 3
       full_name = phone_number = applicant_position = ""
 
       driver.navigate.to "https://www.facebook.com/#{branch}/manage_jobs/?source=manage_jobs_tab&tab=applications"
+
+      puts "--------------------------------------------------------"
       puts "Getting applications for branch #{branch}"
       sleep 2
 
@@ -46,29 +48,38 @@ sleep 3
         applications_container      = driver.find_element(:css, "div[class='aahdfvyu'] > div[class='b20td4e0 muag1w35']")
         applications                = applications_container.find_elements(:xpath, "*")
         last_applicant_status_blank = false
+
+        puts "Number of applicants #{applications.count}"
       
         # check whether we need to load more applications
         applications.last.find_element(:xpath, "*").click
-        main_section                  = driver.find_element(:css, "div[role='main']")
-        full_name_container           = main_section.find_element(:css,"div[class='bp9cbjyn j83agx80 bkfpd7mw aodizinl hv4rvrfc ofv0k9yr dati1w0a']")
+        sleep 3
+        main_section        = driver.find_element(:css, "div[role='main']")
+        full_name_container = main_section.find_element(:css,"div[class='bp9cbjyn j83agx80 bkfpd7mw aodizinl hv4rvrfc ofv0k9yr dati1w0a']")
 
         if full_name_container.text.include?("Set Status")
+          puts "Last applicant status is blank"
           last_applicant_status_blank = true
-          next
+          # next
         end
        
         if last_applicant_status_blank
-          script = "var arr = document.getElementsByClassName('q5bimw55 rpm2j7zs k7i0oixp gvuykj2m j83agx80 cbu4d94t ni8dbmo4 eg9m0zos l9j0dhe7 du4w35lb ofs802cu pohlnb88 dkue75c7 mb9wzai9 d8ncny3e buofh1pr g5gj957u tgvbjcpo l56l04vs r57mb794 kh7kg01d c3g1iek1 k4xni2cv');arr[arr.length-1].scrollBy({left: 0,top: 1000,behavior: 'smooth'});"
+          script = "var arr = document.getElementsByClassName('q5bimw55 rpm2j7zs k7i0oixp gvuykj2m j83agx80 cbu4d94t ni8dbmo4 eg9m0zos l9j0dhe7 du4w35lb ofs802cu pohlnb88 dkue75c7 mb9wzai9 d8ncny3e buofh1pr g5gj957u tgvbjcpo l56l04vs r57mb794 kh7kg01d c3g1iek1 k4xni2cv');arr[arr.length-1].scrollBy({left: 0,top: 500,behavior: 'smooth'});"
+          sleep 1
           driver.execute_script(script)
           sleep 4
+          puts "More applicants loading...."
         else
           load_more_applications = false
         end
         
       end
-      
+      # byebug
       application_opened = false
+      puts "Start processing applicants"
       while applications.length > 0 && !application_opened
+
+          puts "Applicants left #{applications.length}"
 
           application = applications.shift
           # the click is not working as it should( it failed on the elements with the blue dot)
