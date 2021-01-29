@@ -41,12 +41,12 @@ sleep 3
       sleep 2
 
       load_more_applicants = true
-      applicants = nil
+      applications = nil
       
       while load_more_applicants
         # get applications container and push elements inside applications_container to applications
         applicants_container        = driver.find_element(:css, "div[class='aahdfvyu'] > div[class='b20td4e0 muag1w35']")
-        applicants                  = applicants_container.find_elements(:xpath, "*")
+        applications                  = applicants_container.find_elements(:xpath, "*")
         last_applicant_status_blank = false
 
         puts "Number of applicants #{applications.count}"
@@ -76,7 +76,7 @@ sleep 3
 
       application_opened = false
       puts "Start processing applicants"
-      while applications.length > 0# && !application_opened
+      while applications.length > 0 && !application_opened
 
           puts "Applicants left #{applications.length}"
 
@@ -104,6 +104,9 @@ sleep 3
 
             # get full name
             full_name = full_name_container.find_element(:css, "span[class='d2edcug0 hpfvmrgz qv66sw1b c1et5uql oi732d6d ik7dh3pa fgxwclzu a8c37x1j keod5gw0 nxhoafnm aigsh9s9 ns63r2gh fe6kdd0r mau55g9w c8b282yb hrzyx87i o0t2es00 f530mmz5 hnhda86s oo9gr5id hzawbc8m']").text
+
+            # skip if no phone number present
+            next if !main_section.find_elements(:css , "div[class='wovflp6s cxmmr5t8 gjjqq4r6 hcukyx3x']").last.text.downcase.include?("number")
 
             # get phone number
             show_pn_container = main_section.find_elements(:css , "div[class='wovflp6s cxmmr5t8 gjjqq4r6 hcukyx3x']").last
