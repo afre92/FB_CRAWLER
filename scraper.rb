@@ -4,7 +4,7 @@ require "csv"
 
 class Scraper
   attr_accessor :driver, :auth_code
-  @@branches = ["ActiveStaffingElizabeth", "ActiveAtlanta", "ActiveStaffingJerseyCIty", "ActiveStaffingMiami", "ActiveLakelandTampa", "activestaffingARL" ]
+  @@branches = ["ActiveLakelandTampa", "ActiveStaffingElizabeth", "ActiveAtlanta", "ActiveStaffingJerseyCIty", "ActiveStaffingMiami" ] #, "activestaffingARL"
 
   def initialize(auth_code)
     Selenium::WebDriver::Chrome.driver_path = '/Users/andres/Desktop/scraper/chromedriver'
@@ -58,10 +58,15 @@ class Scraper
             next
           end
 
-          main_section                  = @driver.find_element(:css, "div[role='main']")
-          citizenship_container         = main_section.find_elements(:css, "span[class='d2edcug0 hpfvmrgz qv66sw1b c1et5uql oi732d6d ik7dh3pa fgxwclzu a8c37x1j keod5gw0 nxhoafnm aigsh9s9 d9wwppkn fe6kdd0r mau55g9w c8b282yb iv3no6db a5q79mjw g1cxx5fr ekzkrbhg oo9gr5id hzawbc8m']").first
-          parent_citizenship_container  = citizenship_container.find_element(:xpath, "./../..")
-          citizenship_answer            = parent_citizenship_container.find_elements(:css, "div[class='qzhwtbm6 knvmm38d']").last.text
+          begin
+            main_section                  = @driver.find_element(:css, "div[role='main']")
+            citizenship_container         = main_section.find_elements(:css, "span[class='d2edcug0 hpfvmrgz qv66sw1b c1et5uql oi732d6d ik7dh3pa fgxwclzu a8c37x1j keod5gw0 nxhoafnm aigsh9s9 d9wwppkn fe6kdd0r mau55g9w c8b282yb iv3no6db a5q79mjw g1cxx5fr ekzkrbhg oo9gr5id hzawbc8m']").first
+            parent_citizenship_container  = citizenship_container.find_element(:xpath, "./../..")
+            citizenship_answer            = parent_citizenship_container.find_elements(:css, "div[class='qzhwtbm6 knvmm38d']").last.text
+          rescue
+            puts "Error on finding the citizenship answer"
+            next
+          end
 
           if citizenship_answer.downcase.include? "yes"
             csv << applicant_info
@@ -105,7 +110,6 @@ class Scraper
       applicants            = applicants_container.find_elements(:xpath, "*")
 
       puts "Number of applicants #{applicants.count}"
-
       if applicant_processed(applicants.last)
         load_more_applicants = false
         puts "Dont load more applicants"
@@ -122,29 +126,32 @@ class Scraper
 
 
   def applicant_info
-
-    main_section = @driver.find_element(:css, "div[role='main']")
-    main_section.find_element(:css, "div[aria-label='Maybe']").click
-    sleep 3
+    begin
+      main_section = @driver.find_element(:css, "div[role='main']")
+      main_section.find_element(:css, "div[aria-label='Maybe']").click
+      sleep 3
 
     # get full name
-    full_name_container = main_section.find_element(:css,"div[class='bp9cbjyn j83agx80 bkfpd7mw aodizinl hv4rvrfc ofv0k9yr dati1w0a']")
-    applicant_full_name = full_name_container.find_element(:css, "span[class='d2edcug0 hpfvmrgz qv66sw1b c1et5uql oi732d6d ik7dh3pa fgxwclzu a8c37x1j keod5gw0 nxhoafnm aigsh9s9 ns63r2gh fe6kdd0r mau55g9w c8b282yb hrzyx87i o0t2es00 f530mmz5 hnhda86s oo9gr5id hzawbc8m']").text
+      full_name_container = main_section.find_element(:css,"div[class='bp9cbjyn j83agx80 bkfpd7mw aodizinl hv4rvrfc ofv0k9yr dati1w0a']")
+      applicant_full_name = full_name_container.find_element(:css, "span[class='d2edcug0 hpfvmrgz qv66sw1b c1et5uql oi732d6d ik7dh3pa fgxwclzu a8c37x1j keod5gw0 nxhoafnm aigsh9s9 ns63r2gh fe6kdd0r mau55g9w c8b282yb hrzyx87i o0t2es00 f530mmz5 hnhda86s oo9gr5id hzawbc8m']").text
 
-    show_pn_container = main_section.find_elements(:css , "div[class='wovflp6s cxmmr5t8 gjjqq4r6 hcukyx3x']").last
+      show_pn_container = main_section.find_elements(:css , "div[class='wovflp6s cxmmr5t8 gjjqq4r6 hcukyx3x']").last
 
-    return ['no','phone','number'] if !show_pn_container.text.downcase.include?("number")
+      return ['no','phone','number'] if !show_pn_container.text.downcase.include?("number")
 
     # get phone number
-    show_pn_container.click
-    sleep 2
-    applicant_phone_number = show_pn_container.find_element(:css, "span[class='d2edcug0 hpfvmrgz qv66sw1b c1et5uql oi732d6d ik7dh3pa fgxwclzu a8c37x1j keod5gw0 nxhoafnm aigsh9s9 d9wwppkn fe6kdd0r mau55g9w c8b282yb mdeji52x e9vueds3 j5wam9gi knj5qynh m9osqain hzawbc8m']").text
-    applicant_phone_number.gsub!(" copied to clipboard.", "")
+      show_pn_container.click
+      sleep 2
+      applicant_phone_number = show_pn_container.find_element(:css, "span[class='d2edcug0 hpfvmrgz qv66sw1b c1et5uql oi732d6d ik7dh3pa fgxwclzu a8c37x1j keod5gw0 nxhoafnm aigsh9s9 d9wwppkn fe6kdd0r mau55g9w c8b282yb mdeji52x e9vueds3 j5wam9gi knj5qynh m9osqain hzawbc8m']").text
+      applicant_phone_number.gsub!(" copied to clipboard.", "")
 
     # get applicant possition
-    applicant_position = main_section.find_elements(:css, "span[class='d2edcug0 hpfvmrgz qv66sw1b c1et5uql oi732d6d ik7dh3pa fgxwclzu a8c37x1j keod5gw0 nxhoafnm aigsh9s9 d9wwppkn fe6kdd0r mau55g9w c8b282yb iv3no6db a5q79mjw g1cxx5fr lrazzd5p oo9gr5id hzawbc8m']").first.text
+      applicant_position = main_section.find_elements(:css, "span[class='d2edcug0 hpfvmrgz qv66sw1b c1et5uql oi732d6d ik7dh3pa fgxwclzu a8c37x1j keod5gw0 nxhoafnm aigsh9s9 d9wwppkn fe6kdd0r mau55g9w c8b282yb iv3no6db a5q79mjw g1cxx5fr lrazzd5p oo9gr5id hzawbc8m']").first.text
+      return [applicant_full_name, applicant_phone_number, applicant_position]
+    rescue
+      return ["error getting","applicant","info"]
+    end
 
-    return [applicant_full_name, applicant_phone_number, applicant_position]
   end
 
 end
