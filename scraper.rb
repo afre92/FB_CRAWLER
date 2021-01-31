@@ -120,6 +120,7 @@ class Scraper
         sleep 3
       end
     end
+
     puts "returning #{applicants.count} applicants"
     return applicants
   end
